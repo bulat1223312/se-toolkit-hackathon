@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart FAQ Helper</title>
+    <style>
+        :root {
+            --bg: #f0f2f5; --card: #fff; --text: #1a1a2e; --text2: #555;
+            --muted: #999; --border: #e0e0e0; --primary: #4361ee;
+            --primary-hover: #3a56d4; --chip-bg: #e8ecff; --chip-hover: #d0d7ff;
+            --shadow: 0 1px 3px rgba(0,0,0,.08);
+            --tag-urgent-bg: #ffe0e0; --tag-urgent-color: #c0392b;
+            --tag-exam-bg: #fff3cd; --tag-exam-color: #856404;
+            --tag-event-bg: #d4edda; --tag-event-color: #155724;
+            --tag-info-bg: #d1ecf1; --tag-info-color: #0c5460;
+            --auto-bg: #fff; --auto-hover: #f0f4ff;
+            --type-info: #4361ee; --type-warning: #e67e22;
+            --type-success: #27ae60; --type-danger: #e74c3c;
+            --type-info-bg: #e8ecff; --type-warning-bg: #fff3e0;
+            --type-success-bg: #e8f5e9; --type-danger-bg: #fce4ec;
+            --tt-x: #4361ee; --tt-o: #e74c3c; --tt-line: #ccc;
+        }
+        .dark {
+            --bg: #0f0f23; --card: #1a1a3e; --text: #e0e0e0; --text2: #aaa;
+            --muted: #666; --border: #2a2a5a; --primary: #6c83f7;
+            --primary-hover: #5a73e8; --chip-bg: #2a2a5a; --chip-hover: #3a3a6a;
+            --shadow: 0 1px 3px rgba(0,0,0,.4);
+            --tag-urgent-bg: #4a2020; --tag-urgent-color: #f08080;
+            --tag-exam-bg: #4a3a10; --tag-exam-color: #f0d080;
+            --tag-event-bg: #1a3a20; --tag-event-color: #80d0a0;
+            --tag-info-bg: #1a3a3a; --tag-info-color: #80d0d0;
+            --auto-bg: #1e2a4a; --auto-hover: #2a3a5a;
+            --type-info: #6c83f7; --type-warning: #f0a040;
+            --type-success: #40d080; --type-danger: #f06060;
+            --type-info-bg: #2a2a5a; --type-warning-bg: #3a2a10;
+            --type-success-bg: #1a3a20; --type-danger-bg: #3a1a1a;
+            --tt-x: #6c83f7; --tt-o: #f06060; --tt-line: #444;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background .15s, color .15s, border-color .15s; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); }
+
+        .app { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+        .sidebar { background: var(--card); border-right: 1px solid var(--border); padding: 1.25rem; overflow-y: auto; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 1rem; }
+        .main { padding: 1.5rem 2rem; max-width: 1000px; }
+
+        /* ── Sidebar ── */
+        .sidebar h2 { font-size: 1rem; display: flex; align-items: center; gap: .4rem; }
+        .cat-item { display: flex; justify-content: space-between; align-items: center; padding: .45rem .6rem; border-radius: 8px; cursor: pointer; margin-bottom: 2px; font-size: .85rem; }
+        .cat-item:hover { background: var(--chip-bg); }
+        .cat-item.active { background: var(--primary); color: #fff; }
+        .cat-item .count { font-size: .72rem; background: var(--chip-bg); padding: 2px 8px; border-radius: 10px; }
+        .cat-item.active .count { background: rgba(255,255,255,.25); color: #fff; }
+        .sec { }
+        .sec h3 { font-size: .72rem; text-transform: uppercase; color: var(--muted); letter-spacing: .5px; margin-bottom: .4rem; }
+        .event-item { padding: .35rem 0; border-bottom: 1px solid var(--border); font-size: .8rem; }
+        .event-item:last-child { border-bottom: none; }
+        .event-title { font-weight: 600; }
+        .event-date { color: var(--muted); font-size: .72rem; }
+        .tag { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: .62rem; font-weight: 700; margin-left: 4px; vertical-align: middle; }
+        .tag-urgent { background: var(--tag-urgent-bg); color: var(--tag-urgent-color); }
+        .tag-exam { background: var(--tag-exam-bg); color: var(--tag-exam-color); }
+        .tag-event { background: var(--tag-event-bg); color: var(--tag-event-color); }
+        .tag-info { background: var(--tag-info-bg); color: var(--tag-info-color); }
+
+        /* ── Tic-Tac-Toe ── */
+        .ttt-wrap { text-align: center; }
+        .ttt-status { font-size: .82rem; font-weight: 600; margin-bottom: .4rem; min-height: 1.2em; }
+        .ttt-board { display: grid; grid-template-columns: repeat(3, 48px); grid-template-rows: repeat(3, 48px); gap: 2px; margin: 0 auto; width: fit-content; }
+        .ttt-cell { width: 48px; height: 48px; background: var(--chip-bg); border: 1px solid var(--border); border-radius: 6px; font-size: 1.4rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .ttt-cell:hover { background: var(--chip-hover); }
+        .ttt-cell.x { color: var(--tt-x); }
+        .ttt-cell.o { color: var(--tt-o); }
+        .ttt-reset { margin-top: .4rem; padding: .25rem .8rem; background: var(--chip-bg); border: none; border-radius: 6px; cursor: pointer; font-size: .75rem; color: var(--text2); }
+        .ttt-reset:hover { background: var(--chip-hover); }
+        .ttt-score { font-size: .75rem; color: var(--muted); margin-top: .3rem; }
+
+        /* ── Music Player ── */
+        .music-wrap { text-align: center; }
+        .music-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--chip-bg); border: 1px solid var(--border); cursor: pointer; font-size: 1.2rem; display: inline-flex; align-items: center; justify-content: center; }
+        .music-btn:hover { background: var(--chip-hover); }
+        .music-label { font-size: .72rem; color: var(--muted); margin-top: .3rem; }
+
+        /* ── Top bar ── */
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+        .topbar h1 { font-size: 1.3rem; }
+        .topbar-actions { display: flex; gap: .4rem; }
+        .topbar-actions button { background: var(--card); border: 1px solid var(--border); border-radius: 50%; width: 34px; height: 34px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); }
+        .topbar-actions button:hover { background: var(--chip-bg); }
+
+        /* ── Search ── */
+        .search-wrap { position: relative; margin-bottom: 1.5rem; }
+        .search-wrap input { width: 100%; padding: .8rem 1rem; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; background: var(--card); color: var(--text); }
+        .search-wrap input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(67,97,238,.15); }
+
+        /* ── Autocomplete ── */
+        #autocomplete { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--auto-bg); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 6px 16px rgba(0,0,0,.12); z-index: 100; max-height: 280px; overflow-y: auto; display: none; }
+        #autocomplete.show { display: block; animation: fadeIn .12s ease; }
+        .ac-item { padding: .55rem .8rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); font-size: .88rem; }
+        .ac-item:last-child { border-bottom: none; }
+        .ac-item:hover, .ac-item.active { background: var(--auto-hover); }
+        .ac-cat { font-size: .65rem; padding: 2px 8px; border-radius: 10px; background: var(--chip-bg); color: var(--primary); }
+
+        /* ── Result area ── */
+        .result-area { display: none; }
+        .result-area.show { display: block; animation: fadeIn .2s ease; }
+
+        /* ── Primary card ── */
+        .primary-card { border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; }
+        .primary-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
+        .primary-card.type-info::before, .primary-card.type-warning::before, .primary-card.type-success::before, .primary-card.type-danger::before { background: var(--type-info); }
+        .primary-card.type-warning::before { background: var(--type-warning); }
+        .primary-card.type-success::before { background: var(--type-success); }
+        .primary-card.type-danger::before { background: var(--type-danger); }
+        .primary-card.type-info { background: var(--type-info-bg); border: 1px solid var(--border); }
+        .primary-card.type-warning { background: var(--type-warning-bg); border: 1px solid var(--border); }
+        .primary-card.type-success { background: var(--type-success-bg); border: 1px solid var(--border); }
+        .primary-card.type-danger { background: var(--type-danger-bg); border: 1px solid var(--border); }
+        .primary-card .matched-q { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: .4rem; }
+        .primary-card .answer-text { font-size: 1.05rem; line-height: 1.6; white-space: pre-wrap; }
+        .primary-card .meta-badges { display: flex; gap: .35rem; margin-top: .75rem; flex-wrap: wrap; }
+        .meta-badge { font-size: .72rem; padding: 3px 10px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); display: inline-flex; align-items: center; gap: 4px; }
+        .meta-badge .icon { font-size: .82rem; }
+        .primary-card .conf { margin-top: .5rem; font-size: .72rem; color: var(--muted); }
+
+        /* ── No match ── */
+        .no-match { text-align: center; padding: 2rem; background: var(--card); border-radius: 12px; border: 2px dashed var(--border); margin-bottom: 1.5rem; }
+        .no-match .icon { font-size: 2.5rem; margin-bottom: .5rem; }
+        .no-match .text { color: var(--text2); font-size: 1.05rem; }
+
+        /* ── Related ── */
+        .related-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .75rem; margin-top: .5rem; }
+        .related-header h3 { font-size: 1rem; color: var(--text2); }
+        .related-header .count { font-size: .78rem; color: var(--muted); }
+        .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: .75rem; }
+        .related-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; position: relative; overflow: hidden; cursor: pointer; }
+        .related-card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(67,97,238,.12); }
+        .related-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+        .related-card.type-info::before { background: var(--type-info); }
+        .related-card.type-warning::before { background: var(--type-warning); }
+        .related-card.type-success::before { background: var(--type-success); }
+        .related-card.type-danger::before { background: var(--type-danger); }
+        .related-card .rq { font-weight: 600; font-size: .88rem; margin-bottom: .35rem; }
+        .related-card .ra { font-size: .82rem; color: var(--text2); line-height: 1.5; }
+        .related-card .meta-badges { display: flex; gap: .3rem; margin-top: .5rem; flex-wrap: wrap; }
+        .related-card .meta-badge { font-size: .66rem; padding: 2px 7px; }
+
+        /* ── Category view ── */
+        .category-view { display: none; }
+        .category-view.show { display: block; }
+        .cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .cat-header h2 { font-size: 1.15rem; }
+        .cat-header .back-btn { padding: .4rem 1rem; background: var(--chip-bg); border: none; border-radius: 8px; cursor: pointer; font-size: .82rem; color: var(--primary); }
+        .cat-header .back-btn:hover { background: var(--chip-hover); }
+        .cat-all-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: .75rem; }
+
+        /* ── History ── */
+        .history-section { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+        .history-section h3 { font-size: .92rem; margin-bottom: .75rem; color: var(--text2); }
+        .history-item { border-bottom: 1px solid var(--border); padding: .5rem 0; }
+        .history-item:last-child { border-bottom: none; }
+        .history-item .hq { font-weight: 600; font-size: .85rem; }
+        .history-item .ha { font-size: .8rem; color: var(--text2); margin-top: .15rem; }
+        .history-item .ht { font-size: .68rem; color: var(--muted); }
+        .load-btn { padding: .4rem .8rem; background: var(--chip-bg); border: none; border-radius: 8px; cursor: pointer; font-size: .8rem; color: var(--primary); margin-bottom: .5rem; }
+        .load-btn:hover { background: var(--chip-hover); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 850px) {
+            .app { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .sidebar.open { display: flex; position: fixed; top: 0; left: 0; width: 280px; z-index: 200; height: 100vh; box-shadow: 4px 0 12px rgba(0,0,0,.2); }
+            .mobile-menu-btn { display: flex !important; }
+            .related-grid, .cat-all-grid { grid-template-columns: 1fr; }
+        }
+        .mobile-menu-btn { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div>
+                <h2>📂 Categories</h2>
+                <div id="catList">
+                    <div class="cat-item active" data-cat="all" onclick="showAll()">
+                        <span>All</span><span class="count" id="totalCount">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sec">
+                <h3>📅 Upcoming</h3>
+                <div id="events"></div>
+            </div>
+
+            <div class="sec ttt-wrap">
+                <h3>🎮 Tic-Tac-Toe</h3>
+                <div class="ttt-status" id="tttStatus">Your turn (X)</div>
+                <div class="ttt-board" id="tttBoard"></div>
+                <button class="ttt-reset" onclick="tttReset()">New Game</button>
+                <div class="ttt-score" id="tttScore">X: 0 | O: 0 | Draw: 0</div>
+            </div>
+
+            <div class="sec music-wrap">
+                <h3>🎵 Background Music</h3>
+                <button class="music-btn" id="musicBtn" onclick="toggleMusic()">🔇</button>
+                <div class="music-label" id="musicLabel">Click to enable ambient music</div>
+            </div>
+        </div>
+
+        <!-- Main -->
+        <div class="main">
+            <div class="topbar">
+                <h1>🎓 Smart FAQ Helper</h1>
+                <div class="topbar-actions">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+                    <button onclick="toggleDark()" id="darkBtn" title="Dark mode">🌙</button>
+                </div>
+            </div>
+
+            <div class="search-wrap">
+                <input type="text" id="question" placeholder="Ask anything: exam, math deadline, gym, wifi..." autocomplete="off">
+                <div id="autocomplete"></div>
+            </div>
+
+            <div class="result-area" id="resultArea">
+                <div id="primaryCard"></div>
+                <div id="relatedSection"></div>
+            </div>
+
+            <div class="category-view" id="categoryView">
+                <div class="cat-header">
+                    <h2 id="catTitle"></h2>
+                    <button class="back-btn" onclick="showAll()">← Back to all</button>
+                </div>
+                <div class="cat-all-grid" id="catAllGrid"></div>
+            </div>
+
+            <div class="history-section">
+                <h3>📋 Recent Queries</h3>
+                <button class="load-btn" onclick="loadHistory()">Load full history</button>
+                <div id="history"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── State ──
+        let acIndex = -1, acData = [], activeCat = "all", acCategory = "";
+
+        // ── Categories ──
+        async function loadCategories() {
+            const res = await fetch("/categories");
+            const cats = await res.json();
+            const total = cats.reduce((s, c) => s + c.count, 0);
+            document.getElementById("totalCount").textContent = total;
+            const div = document.getElementById("catList");
+            const icons = {
+                deadlines:"⏰",exams:"📝",projects:"💻",grades:"📊",
+                schedule:"🗓",enrollment:"📋",it:"🖥",campus:"🏫",
+                financial:"💰",life:"🎯",rules:"⚖️",general:"ℹ️",
+            };
+            cats.forEach(c => {
+                const icon = icons[c.category] || "📌";
+                const el = document.createElement("div");
+                el.className = "cat-item"; el.dataset.cat = c.category;
+                el.innerHTML = `<span>${icon} ${c.category}</span><span class="count">${c.count}</span>`;
+                el.onclick = () => filterCategory(c.category);
+                div.appendChild(el);
+            });
+        }
+
+        function setActiveCat(cat) {
+            activeCat = cat;
+            document.querySelectorAll(".cat-item").forEach(el =>
+                el.classList.toggle("active", el.dataset.cat === cat));
+        }
+
+        async function filterCategory(cat) {
+            setActiveCat(cat); acCategory = cat; hideAC();
+            const res = await fetch(`/faqs?category=${cat}`);
+            const faqs = await res.json();
+            const title = cat.charAt(0).toUpperCase() + cat.slice(1);
+            document.getElementById("catTitle").textContent = `${title} (${faqs.length} entries)`;
+            document.getElementById("catAllGrid").innerHTML = faqs.map(f => renderCard(f)).join("");
+            document.getElementById("categoryView").classList.add("show");
+            document.getElementById("resultArea").classList.remove("show");
+        }
+
+        function showAll() {
+            setActiveCat("all"); acCategory = "";
+            document.getElementById("categoryView").classList.remove("show");
+        }
+
+        // ── Render card (category browse) ──
+        function renderCard(f) {
+            const b = badges(f);
+            return `<div class="related-card type-${f.meta_type}" onclick="quickAsk('${f.question.replace(/'/g,"\\'")}')">
+                <div class="rq">${f.question}</div>
+                <div class="ra">${f.answer}</div>
+                ${b.length ? `<div class="meta-badges">${b.join("")}</div>` : ""}
+            </div>`;
+        }
+
+        function badges(f) {
+            const b = [];
+            if (f.meta_subject) b.push(`<span class="meta-badge"><span class="icon">📚</span>${f.meta_subject}</span>`);
+            if (f.meta_professor) b.push(`<span class="meta-badge"><span class="icon">👤</span>${f.meta_professor}</span>`);
+            if (f.meta_room) b.push(`<span class="meta-badge"><span class="icon">📍</span>${f.meta_room}</span>`);
+            if (f.meta_time) b.push(`<span class="meta-badge"><span class="icon">🕐</span>${f.meta_time}</span>`);
+            if (f.meta_date) b.push(`<span class="meta-badge"><span class="icon">📅</span>${f.meta_date}</span>`);
+            if (f.meta_semester) b.push(`<span class="meta-badge"><span class="icon">🎓</span>${f.meta_semester}</span>`);
+            return b;
+        }
+
+        // ── Ask ──
+        async function askQuestion() {
+            const input = document.getElementById("question");
+            if (!input.value.trim()) return;
+            hideAC();
+            document.getElementById("categoryView").classList.remove("show");
+
+            const res = await fetch("/ask", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ question: input.value }),
+            });
+            const data = await res.json();
+            const area = document.getElementById("resultArea");
+            area.classList.add("show");
+
+            if (!data.matched_question) {
+                document.getElementById("primaryCard").innerHTML =
+                    `<div class="no-match"><div class="icon">🤷</div><div class="text">${data.answer}</div></div>`;
+                document.getElementById("relatedSection").innerHTML = "";
+                return;
+            }
+
+            const p = data.primary;
+            document.getElementById("primaryCard").innerHTML =
+                `<div class="primary-card type-${p.meta_type}">
+                    <div class="matched-q">✓ Matched: "${data.matched_question}"</div>
+                    <div class="answer-text">${data.answer}</div>
+                    <div class="meta-badges">${badges(p).join("")}</div>
+                    <div class="conf">Confidence: ${data.confidence} · Category: ${data.category_name} · ${p.related ? p.related.length : data.related ? data.related.length : 0} related entries</div>
+                </div>`;
+
+            const rel = document.getElementById("relatedSection");
+            if (!data.related || !data.related.length) { rel.innerHTML = ""; return; }
+            rel.innerHTML = `
+                <div class="related-header">
+                    <h3>📚 More from "${data.category_name}"</h3>
+                    <span class="count">${data.related.length} entries</span>
+                </div>
+                <div class="related-grid">
+                    ${data.related.map(r =>
+                        `<div class="related-card type-${r.meta_type}" onclick="quickAsk('${r.question.replace(/'/g,"\\'")}')">
+                            <div class="rq">${r.question}</div>
+                            <div class="ra">${r.answer}</div>
+                            <div class="meta-badges">${badges(r).join("")}</div>
+                        </div>`
+                    ).join("")}
+                </div>`;
+        }
+
+        function quickAsk(q) { document.getElementById("question").value = q; askQuestion(); }
+
+        // ── Autocomplete ──
+        async function showSuggestions(val) {
+            acIndex = -1;
+            if (val.length < 2) { hideAC(); return; }
+            const catP = acCategory ? `&category=${acCategory}` : "";
+            const res = await fetch(`/search_suggestions?q=${encodeURIComponent(val)}${catP}`);
+            acData = await res.json();
+            const div = document.getElementById("autocomplete");
+            if (!acData.length) { hideAC(); return; }
+            div.innerHTML = acData.map((item, i) =>
+                `<div class="ac-item" data-i="${i}" onclick="pickAc(${i})">
+                    <span class="ac-q">${hl(val, item.question)}</span>
+                    <span class="ac-cat">${item.category}</span>
+                </div>`
+            ).join("");
+            div.classList.add("show");
+        }
+
+        function hl(q, text) {
+            const i = text.toLowerCase().indexOf(q.toLowerCase());
+            if (i === -1) return text;
+            return text.slice(0, i) + "<b>" + text.slice(i, i + q.length) + "</b>" + text.slice(i + q.length);
+        }
+
+        function hideAC() { document.getElementById("autocomplete").classList.remove("show"); acData = []; }
+        function pickAc(i) { document.getElementById("question").value = acData[i].question; hideAC(); askQuestion(); }
+
+        // ── History ──
+        async function loadHistory() {
+            const res = await fetch("/history");
+            const items = await res.json();
+            document.getElementById("history").innerHTML = items.slice(0, 50).map(h =>
+                `<div class="history-item">
+                    <div class="hq">${h.question}</div>
+                    <div class="ha">${h.answer}</div>
+                    <div class="ht">${new Date(h.timestamp).toLocaleString()}</div>
+                </div>`
+            ).join("") || "<p style='color:var(--muted);font-size:.82rem'>No queries yet.</p>";
+        }
+
+        // ── Events ──
+        async function loadEvents() {
+            const res = await fetch("/events");
+            const events = await res.json();
+            document.getElementById("events").innerHTML = events.map(e =>
+                `<div class="event-item">
+                    <div class="event-title">${e.title}<span class="tag tag-${e.tag}">${e.tag}</span></div>
+                    <div class="event-date">${e.date}</div>
+                </div>`
+            ).join("");
+        }
+
+        // ── Dark mode ──
+        function toggleDark() {
+            document.body.classList.toggle("dark");
+            const d = document.body.classList.contains("dark");
+            document.getElementById("darkBtn").textContent = d ? "☀️" : "🌙";
+            localStorage.setItem("dark", d);
+        }
+        if (localStorage.getItem("dark") === "true") {
+            document.body.classList.add("dark");
+            document.getElementById("darkBtn").textContent = "☀️";
+        }
+
+        // ── Mobile sidebar ──
+        function toggleSidebar() { document.getElementById("sidebar").classList.toggle("open"); }
+
+        // ── Input events ──
+        const input = document.getElementById("question");
+        let debounce;
+        input.addEventListener("input", () => { clearTimeout(debounce); debounce = setTimeout(() => showSuggestions(input.value), 200); });
+        input.addEventListener("keydown", e => {
+            if (e.key === "Enter") { e.preventDefault(); askQuestion(); return; }
+            if (!acData.length) return;
+            if (e.key === "ArrowDown") { e.preventDefault(); acIndex = Math.min(acIndex + 1, acData.length - 1); highlightAc(); }
+            if (e.key === "ArrowUp") { e.preventDefault(); acIndex = Math.max(acIndex - 1, -1); highlightAc(); }
+            if (e.key === "Escape") hideAC();
+        });
+        function highlightAc() {
+            document.querySelectorAll(".ac-item").forEach((el, i) => el.classList.toggle("active", i === acIndex));
+            if (acIndex >= 0) input.value = acData[acIndex].question;
+        }
+        document.addEventListener("click", e => { if (!e.target.closest(".search-wrap")) hideAC(); });
+
+        // ═══════════════════════════════════════════════════════
+        // TIC-TAC-TOE
+        // ═══════════════════════════════════════════════════════
+        let ttt = { board: Array(9).fill(""), turn: "X", over: false, score: { X: 0, O: 0, D: 0 } };
+
+        function tttReset() {
+            ttt.board = Array(9).fill(""); ttt.turn = "X"; ttt.over = false;
+            tttRender(); tttStatus("Your turn (X)");
+        }
+
+        function tttRender() {
+            const board = document.getElementById("tttBoard");
+            board.innerHTML = ttt.board.map((c, i) =>
+                `<div class="ttt-cell ${c.toLowerCase()}" onclick="tttPlay(${i})">${c}</div>`
+            ).join("");
+        }
+
+        function tttStatus(msg) { document.getElementById("tttStatus").textContent = msg; }
+
+        function tttPlay(i) {
+            if (ttt.over || ttt.board[i] || ttt.turn !== "X") return;
+            ttt.board[i] = "X";
+            if (tttCheck("X")) { tttOver("X wins! 🎉"); ttt.score.X++; return; }
+            if (ttt.board.every(c => c)) { tttOver("Draw!"); ttt.score.D++; return; }
+            ttt.turn = "O"; tttRender(); tttStatus("AI thinking...");
+            setTimeout(() => {
+                tttAI();
+                if (tttCheck("O")) { tttOver("AI wins! 🤖"); ttt.score.O++; return; }
+                if (ttt.board.every(c => c)) { tttOver("Draw!"); ttt.score.D++; return; }
+                ttt.turn = "X"; tttRender(); tttStatus("Your turn (X)");
+                tttUpdateScore();
+            }, 300);
+            tttRender();
+        }
+
+        function tttAI() {
+            // Minimax
+            let best = -Infinity, move = -1;
+            for (let i = 0; i < 9; i++) {
+                if (!ttt.board[i]) {
+                    ttt.board[i] = "O";
+                    let s = minimax(ttt.board, 0, false);
+                    ttt.board[i] = "";
+                    if (s > best) { best = s; move = i; }
+                }
+            }
+            if (move >= 0) ttt.board[move] = "O";
+        }
+
+        function minimax(b, depth, isMax) {
+            if (checkWin(b, "O")) return 10 - depth;
+            if (checkWin(b, "X")) return depth - 10;
+            if (b.every(c => c)) return 0;
+            if (isMax) {
+                let best = -Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (!b[i]) { b[i] = "O"; best = Math.max(best, minimax(b, depth + 1, false)); b[i] = ""; }
+                }
+                return best;
+            } else {
+                let best = Infinity;
+                for (let i = 0; i < 9; i++) {
+                    if (!b[i]) { b[i] = "X"; best = Math.min(best, minimax(b, depth + 1, true)); b[i] = ""; }
+                }
+                return best;
+            }
+        }
+
+        const WINS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+        function checkWin(b, p) { return WINS.some(w => w.every(i => b[i] === p)); }
+        function tttCheck(p) { return checkWin(ttt.board, p); }
+
+        function tttOver(msg) { ttt.over = true; tttRender(); tttStatus(msg); tttUpdateScore(); }
+        function tttUpdateScore() {
+            const s = ttt.score;
+            document.getElementById("tttScore").textContent = `X: ${s.X} | O: ${s.O} | Draw: ${s.D}`;
+        }
+
+        tttReset();
+
+        // ═══════════════════════════════════════════════════════
+        // MINECRAFT-STYLE AMBIENT MUSIC (C418 inspired)
+        // Sparse pentatonic melody, soft square+triangle tones
+        // ═══════════════════════════════════════════════════════
+        let audioCtx = null, musicPlaying = false, musicInterval = null;
+
+        // Minecraft pentatonic scale notes (frequencies)
+        const NOTE = {
+            C3:130.81,D3:146.83,E3:164.81,G3:196.00,A3:220.00,
+            C4:261.63,D4:293.66,E4:329.63,G4:392.00,A4:440.00,
+            C5:523.25,D5:587.33,E5:659.25,G5:783.99,A5:880.00,
+        };
+
+        // Melody patterns inspired by Minecraft's calm, sparse style
+        // Each pattern: { note, duration, time offset }
+        const PATTERNS = [
+            // Sweden-inspired: gentle descending
+            [
+                {n:NOTE.E5,d:0.8,t:0},{n:NOTE.D5,d:0.8,t:1},{n:NOTE.C5,d:1.2,t:2},
+                {n:NOTE.A4,d:0.8,t:3.5},{n:NOTE.G4,d:0.8,t:4.5},{n:NOTE.A4,d:1.2,t:5.5},
+            ],
+            // Calm ascending
+            [
+                {n:NOTE.A3,d:1.5,t:0},{n:NOTE.C4,d:0.8,t:2},{n:NOTE.D4,d:0.8,t:3},
+                {n:NOTE.E4,d:1.2,t:4},{n:NOTE.G4,d:0.8,t:5.5},{n:NOTE.A4,d:1,t:6.5},
+            ],
+            // Floating high notes
+            [
+                {n:NOTE.C5,d:0.6,t:0},{n:NOTE.G4,d:1,t:1.5},{n:NOTE.A4,d:0.6,t:3},
+                {n:NOTE.E4,d:0.8,t:4},{n:NOTE.D4,d:1.2,t:5},{n:NOTE.E4,d:0.8,t:6.5},
+                {n:NOTE.C4,d:1,t:8},
+            ],
+            // Deep + high contrast
+            [
+                {n:NOTE.A3,d:2,t:0},{n:NOTE.E5,d:0.6,t:0.5},{n:NOTE.D5,d:0.6,t:2},
+                {n:NOTE.C5,d:1,t:3},{n:NOTE.G3,d:1.5,t:4.5},{n:NOTE.A4,d:0.8,t:6},
+                {n:NOTE.G4,d:1.2,t:7},
+            ],
+            // Gentle waltz-like
+            [
+                {n:NOTE.C4,d:1,t:0},{n:NOTE.E4,d:0.8,t:1.5},{n:NOTE.G4,d:0.8,t:2.5},
+                {n:NOTE.A4,d:1.2,t:3.5},{n:NOTE.G4,d:0.6,t:5},{n:NOTE.E4,d:0.8,t:6},
+                {n:NOTE.D4,d:1,t:7},{n:NOTE.C4,d:1.5,t:8},
+            ],
+        ];
+
+        function toggleMusic() {
+            const btn = document.getElementById("musicBtn");
+            const label = document.getElementById("musicLabel");
+            if (!musicPlaying) {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === "suspended") audioCtx.resume();
+                startMinecraftMusic();
+                btn.textContent = "🔊";
+                label.textContent = "🎵 Minecraft ambient playing";
+                musicPlaying = true;
+            } else {
+                stopMinecraftMusic();
+                btn.textContent = "🔇";
+                label.textContent = "Click for Minecraft music";
+                musicPlaying = false;
+            }
+        }
+
+        function startMinecraftMusic() {
+            const ctx = audioCtx;
+            const master = ctx.createGain();
+            master.gain.value = 0.12;
+            master.connect(ctx.destination);
+
+            // Soft reverb-like delay
+            const delay = ctx.createDelay(1);
+            delay.delayTime.value = 0.3;
+            const delayGain = ctx.createGain();
+            delayGain.gain.value = 0.25;
+            master.connect(delay);
+            delay.connect(delayGain);
+            delayGain.connect(ctx.destination);
+
+            // Continuous soft pad (very quiet background)
+            const padGain = ctx.createGain();
+            padGain.gain.value = 0.02;
+            padGain.connect(master);
+            [130.81, 196.00, 261.63].forEach(f => {
+                const osc = ctx.createOscillator();
+                osc.type = "sine";
+                osc.frequency.value = f;
+                osc.connect(padGain);
+                osc.start();
+            });
+
+            // Play melody patterns in loop
+            let patternIdx = 0;
+            function playPattern() {
+                const pattern = PATTERNS[patternIdx % PATTERNS.length];
+                patternIdx++;
+                const maxTime = Math.max(...pattern.map(p => p.t + p.d)) + 2;
+
+                pattern.forEach(p => {
+                    playNote(ctx, master, p.n, p.t, p.d);
+                });
+
+                musicInterval = setTimeout(playPattern, maxTime * 1000);
+            }
+            playPattern();
+        }
+
+        function playNote(ctx, dest, freq, startTime, duration) {
+            const now = ctx.currentTime + startTime;
+
+            // Main tone — triangle for soft character
+            const osc = ctx.createOscillator();
+            osc.type = "triangle";
+            osc.frequency.value = freq;
+
+            // Envelope: quick attack, slow decay (Minecraft style)
+            const env = ctx.createGain();
+            env.gain.setValueAtTime(0, now);
+            env.gain.linearRampToValueAtTime(0.15, now + 0.05);
+            env.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+            osc.connect(env);
+            env.connect(dest);
+            osc.start(now);
+            osc.stop(now + duration);
+
+            // Subtle harmonic overtone
+            const osc2 = ctx.createOscillator();
+            osc2.type = "sine";
+            osc2.frequency.value = freq * 2;
+            const env2 = ctx.createGain();
+            env2.gain.setValueAtTime(0, now);
+            env2.gain.linearRampToValueAtTime(0.02, now + 0.05);
+            env2.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.7);
+            osc2.connect(env2);
+            env2.connect(dest);
+            osc2.start(now);
+            osc2.stop(now + duration);
+        }
+
+        function stopMinecraftMusic() {
+            if (musicInterval) clearTimeout(musicInterval);
+            musicInterval = null;
+        }
+
+        // ── Init ──
+        loadCategories();
+        loadEvents();
+        loadHistory();
+    </script>
+</body>
+</html>

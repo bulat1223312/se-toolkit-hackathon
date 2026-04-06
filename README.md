@@ -1,0 +1,137 @@
+# Smart FAQ Helper
+
+Full-stack FAQ system with contextual answers — students instantly get precise answers plus all related entries from the same category.
+
+## Demo
+
+![FAQ Search](https://via.placeholder.com/800x450/4361ee/ffffff?text=Smart+FAQ+Helper+—+Search+Results)
+![Category Browse](https://via.placeholder.com/800x450/27ae60/ffffff?text=Smart+FAQ+Helper+—+Category+Browse)
+![Dark Mode](https://via.placeholder.com/800x450/1a1a2e/e0e0e0?text=Smart+FAQ+Helper+—+Dark+Mode)
+
+## Product Context
+
+### End Users
+
+University students who need quick access to course information, deadlines, exam schedules, grading policies, campus resources, and other academic information.
+
+### Problem
+
+Students waste time searching through multiple course pages, Moodle, emails, and announcements to find basic information like deadlines, exam rooms, office hours, and submission rules. Information is scattered across many sources and hard to find quickly.
+
+### Our Solution
+
+A single-page web application with 112 FAQ entries across 12 categories. Hybrid fuzzy matching (55% character-level + 45% word-level Jaccard) finds the best match and returns all related entries from that category. Autocomplete, category browsing, dark mode, and query history make it fast and pleasant to use.
+
+## Features
+
+### Implemented (Version 1 + Version 2)
+
+| Feature | Status |
+|---------|--------|
+| Fuzzy search with hybrid matching | ✅ |
+| Contextual answers (best match + related entries) | ✅ |
+| Category browsing | ✅ |
+| Autocomplete with keyboard navigation | ✅ |
+| Metadata badges (room, time, date, professor) | ✅ |
+| Color-coded types (info/warning/success/danger) | ✅ |
+| Dark mode with localStorage persistence | ✅ |
+| Recent queries history | ✅ |
+| Q&A history API | ✅ |
+| Search statistics API | ✅ |
+| Upcoming events sidebar | ✅ |
+| Responsive design (mobile-friendly) | ✅ |
+| Docker support | ✅ |
+| SQLite database with 112 FAQ entries | ✅ |
+
+### Not Yet Implemented
+
+| Feature | Priority |
+|---------|----------|
+| LLM-powered chatbot integration | Medium |
+| Multi-language support | Low |
+| Admin panel for managing FAQs | Medium |
+| Telegram bot interface | Low |
+| Analytics dashboard | Low |
+
+## Usage
+
+### Web Interface
+
+1. Open the app in your browser at `http://<host>:8000`
+2. Type your question in the search bar (e.g., "exam", "deadline", "gym")
+3. Use autocomplete suggestions or press Enter to search
+4. View the best match answer + all related entries from the same category
+5. Click category cards in the sidebar to browse all entries
+6. Toggle dark mode with the moon icon
+
+### API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/` | Frontend UI |
+| GET | `/faqs?category=exam` | FAQ entries (optionally filtered) |
+| GET | `/categories` | Category list with counts |
+| GET | `/events` | Upcoming events |
+| GET | `/search_suggestions?q` | Autocomplete (supports `&category=`) |
+| POST | `/ask` | Get answer + all related category entries |
+| GET | `/history` | Q&A history |
+| GET | `/stats` | Search statistics |
+
+## Deployment
+
+### Requirements
+
+- **OS**: Ubuntu 24.04 (or any Linux with Docker)
+- **Docker** installed and running
+
+### Step-by-Step Deployment
+
+#### Option A: Docker (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/bulat1223312/se-toolkit-hackathon.git
+cd se-toolkit-hackathon
+
+# Build the Docker image
+docker build -t smart-faq-helper .
+
+# Run the container
+docker run -d -p 8000:8000 --name faq-helper smart-faq-helper
+
+# Open in browser
+# http://<your-host-ip>:8000
+```
+
+#### Option B: Direct Python
+
+```bash
+# Clone the repository
+git clone https://github.com/bulat1223312/se-toolkit-hackathon.git
+cd se-toolkit-hackathon
+
+# Install dependencies
+pip install fastapi uvicorn sqlalchemy
+
+# Run the server
+uvicorn main:app --host 0.0.0.0 --port 8000
+
+# Open in browser
+# http://localhost:8000
+```
+
+### Stopping the Service
+
+```bash
+# Docker
+docker stop faq-helper
+docker rm faq-helper
+
+# Direct Python
+# Press Ctrl+C in the terminal
+```
+
+## Links
+
+- **GitHub Repository**: https://github.com/bulat1223312/se-toolkit-hackathon
+- **Deployed Product**: http://10.93.25.49:8000
