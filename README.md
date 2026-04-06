@@ -2,6 +2,13 @@
 
 Full-stack FAQ system with contextual answers — students instantly get precise answers plus all related entries from the same category.
 
+## Author Information
+
+- **Name**: Bulatov Bulat
+- **Email**: b.bulatov@innopolis.university
+- **Group**: DSAI-03
+- **GitHub**: github.com/bulat1223312
+
 ## Demo
 
 ### FAQ Search
