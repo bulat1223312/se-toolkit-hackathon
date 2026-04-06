@@ -4,9 +4,20 @@ Full-stack FAQ system with contextual answers — students instantly get precise
 
 ## Demo
 
-![FAQ Search](https://via.placeholder.com/800x450/4361ee/ffffff?text=Smart+FAQ+Helper+—+Search+Results)
-![Category Browse](https://via.placeholder.com/800x450/27ae60/ffffff?text=Smart+FAQ+Helper+—+Category+Browse)
-![Dark Mode](https://via.placeholder.com/800x450/1a1a2e/e0e0e0?text=Smart+FAQ+Helper+—+Dark+Mode)
+### FAQ Search
+Type a question, get the best match + all related entries from the same category.
+
+![FAQ Search](screenshot_search.png)
+
+### Category Browse
+Click any category in the sidebar to see all entries at once.
+
+![Category Browse](screenshot_categories.png)
+
+### Dark Mode
+Toggle dark mode for comfortable night-time studying.
+
+![Dark Mode](screenshot_dark.png)
 
 ## Product Context
 
