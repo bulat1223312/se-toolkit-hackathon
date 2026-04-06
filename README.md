@@ -42,24 +42,32 @@ A single-page web application with 112 FAQ entries across 12 categories. Hybrid 
 
 ## Features
 
-### Implemented (Version 1 + Version 2)
+### Version 1 - Core MVP
 
 | Feature | Status |
 |---------|--------|
-| Fuzzy search with hybrid matching | ✅ |
-| Contextual answers (best match + related entries) | ✅ |
-| Category browsing | ✅ |
+| Input field for questions | ✅ |
+| Basic FAQ matching (keyword-based) | ✅ |
+| Return predefined answers | ✅ |
+| Simple backend (FastAPI) | ✅ |
+
+### Version 2 - Final Product
+
+| Feature | Status |
+|---------|--------|
+| Fuzzy search (smart matching using similarity) | ✅ |
+| Database (store FAQ + history) | ✅ |
+| History tracking | ✅ |
+| Dockerized deployment | ✅ |
+| Improved UI | ✅ |
+| Category browsing with entry counts | ✅ |
 | Autocomplete with keyboard navigation | ✅ |
 | Metadata badges (room, time, date, professor) | ✅ |
 | Color-coded types (info/warning/success/danger) | ✅ |
 | Dark mode with localStorage persistence | ✅ |
-| Recent queries history | ✅ |
-| Q&A history API | ✅ |
 | Search statistics API | ✅ |
 | Upcoming events sidebar | ✅ |
 | Responsive design (mobile-friendly) | ✅ |
-| Docker support | ✅ |
-| SQLite database with 112 FAQ entries | ✅ |
 
 ### Not Yet Implemented
 
