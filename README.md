@@ -44,30 +44,38 @@ A single-page web application with 112 FAQ entries across 12 categories. Hybrid 
 
 ### Version 1 - Core MVP
 
-| Feature | Status |
-|---------|--------|
-| Input field for questions | ✅ |
-| Basic FAQ matching (keyword-based) | ✅ |
-| Return predefined answers | ✅ |
-| Simple backend (FastAPI) | ✅ |
+| Feature | Status | Details |
+|---------|--------|---------|
+| Input field for questions | ✅ | Text input with placeholder and real-time validation |
+| Basic FAQ matching (keyword-based) | ✅ | Keyword search across 112 FAQ entries |
+| Return predefined answers | ✅ | Predefined answers seeded in SQLite database |
+| Simple backend (FastAPI) | ✅ | FastAPI server with Pydantic models, SQLite + SQLAlchemy ORM |
+| SQLite database with 112 FAQ entries | ✅ | 12 categories: deadlines, exams, projects, grades, schedule, enrollment, IT, campus, financial, life, rules, general |
+| FAQ data model with metadata | ✅ | Each entry has: question, answer, category, subject, professor, room, time, date, semester, type |
 
 ### Version 2 - Final Product
 
-| Feature | Status |
-|---------|--------|
-| Fuzzy search (smart matching using similarity) | ✅ |
-| Database (store FAQ + history) | ✅ |
-| History tracking | ✅ |
-| Dockerized deployment | ✅ |
-| Improved UI | ✅ |
-| Category browsing with entry counts | ✅ |
-| Autocomplete with keyboard navigation | ✅ |
-| Metadata badges (room, time, date, professor) | ✅ |
-| Color-coded types (info/warning/success/danger) | ✅ |
-| Dark mode with localStorage persistence | ✅ |
-| Search statistics API | ✅ |
-| Upcoming events sidebar | ✅ |
-| Responsive design (mobile-friendly) | ✅ |
+| Feature | Status | Details |
+|---------|--------|---------|
+| **Fuzzy search engine** | ✅ | Hybrid matching: 55% character-level (difflib) + 45% word-level (Jaccard similarity) |
+| **Database (FAQ + history)** | ✅ | SQLite with SQLAlchemy ORM — stores 112 FAQs + query history with timestamps |
+| **History tracking** | ✅ | Every query saved with question, answer, and timestamp. Full history accessible via API |
+| **Dockerized deployment** | ✅ | Docker image (python:3.10-slim), deployed on university VM (Ubuntu 24.04) |
+| **Improved UI** | ✅ | Single-page app with CSS Grid, smooth animations, responsive design |
+| **Category browsing** | ✅ | Sidebar with 12 categories, entry counts, active state highlighting |
+| **Autocomplete** | ✅ | Real-time suggestions (min 2 chars), highlights matched text, shows category badges, keyboard navigation (↑↓ Enter Esc) |
+| **Contextual answers** | ✅ | Best match displayed as primary card + all related entries from the same category in a grid |
+| **Metadata badges** | ✅ | Color-coded badges: 📚 Subject, 👤 Professor, 📍 Room, 🕐 Time, 📅 Date, 🎓 Semester |
+| **Color-coded severity types** | ✅ | 4 types: info (blue), warning (orange), success (green), danger (red) — affects card background and left border |
+| **Dark mode** | ✅ | Toggle with moon/sun icon, localStorage persistence, full theme swap via CSS variables |
+| **Search statistics API** | ✅ | `/stats` endpoint: total queries, top 10 most asked questions with counts |
+| **Upcoming events sidebar** | ✅ | 11 events with tags: urgent, exam, event, info — color-coded badges |
+| **Responsive design** | ✅ | Mobile-friendly layout, collapsible sidebar, hamburger menu on small screens |
+| **API endpoints** | ✅ | 8 endpoints: `/`, `/faqs`, `/categories`, `/events`, `/search_suggestions`, `/ask`, `/history`, `/stats` |
+| **Quick-ask from cards** | ✅ | Click any FAQ card in category browse or related results to instantly search for it |
+| **Category-filtered autocomplete** | ✅ | Autocomplete respects currently selected category |
+| **Confidence score** | ✅ | Each result shows match confidence percentage |
+| **MIT License** | ✅ | Open-source, added to repository |
 
 ### Not Yet Implemented
 
