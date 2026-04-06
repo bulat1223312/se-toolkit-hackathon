@@ -168,19 +168,20 @@ def create_presentation():
         p3.insert_text(fitz.Point(100, iy), item, fontsize=10.5, fontname="helv", color=TEXT)
 
     # TA Feedback
-    y_fb = 645
-    fb_card = fitz.Rect(60, y_fb, 535, y_fb + 70)
+    y_fb = 640
+    fb_card = fitz.Rect(60, y_fb, 535, y_fb + 80)
     card_shadow(p3, fb_card)
-    p3.draw_rect(fitz.Rect(60, y_fb, 66, y_fb + 70), fill=ORANGE)
+    p3.draw_rect(fitz.Rect(60, y_fb, 66, y_fb + 80), fill=ORANGE)
 
-    p3.insert_text(fitz.Point(82, y_fb + 22), "TA Feedback Addressed", fontsize=16, fontname="hebo", color=ORANGE)
+    p3.insert_text(fitz.Point(82, y_fb + 24), "TA Feedback Addressed", fontsize=16, fontname="hebo", color=ORANGE)
 
     ta_feedback = [
-        '"Matcher is too general, allow filters?" → Added category filtering + subject/professor metadata badges',
+        '"Matcher is too general, allow filters?"',
+        "→ Added category filtering + subject/professor metadata badges",
     ]
 
     for i, fb in enumerate(ta_feedback):
-        p3.insert_text(fitz.Point(82, y_fb + 44 + i * 20), fb, fontsize=10.5, fontname="helv", color=TEXT2)
+        p3.insert_text(fitz.Point(82, y_fb + 48 + i * 18), fb, fontsize=10, fontname="helv", color=TEXT2)
 
     p3.draw_rect(fitz.Rect(0, H - 8, W, H), fill=BLUE)
 
