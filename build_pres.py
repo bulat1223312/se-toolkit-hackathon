@@ -169,20 +169,18 @@ def create_presentation():
 
     # TA Feedback
     y_fb = 645
-    fb_card = fitz.Rect(60, y_fb, 535, y_fb + 90)
+    fb_card = fitz.Rect(60, y_fb, 535, y_fb + 70)
     card_shadow(p3, fb_card)
-    p3.draw_rect(fitz.Rect(60, y_fb, 66, y_fb + 90), fill=ORANGE)
+    p3.draw_rect(fitz.Rect(60, y_fb, 66, y_fb + 70), fill=ORANGE)
 
-    p3.insert_text(fitz.Point(82, y_fb + 25), "TA Feedback Addressed", fontsize=16, fontname="hebo", color=ORANGE)
+    p3.insert_text(fitz.Point(82, y_fb + 22), "TA Feedback Addressed", fontsize=16, fontname="hebo", color=ORANGE)
 
     ta_feedback = [
-        '"Matcher too general" → Added subject/professor metadata and category filtering',
-        '"UI needs improvement" → Built category browse, autocomplete, dark mode, responsive layout',
-        '"Add deployment" → Dockerized and deployed on university VM (Ubuntu 24.04)',
+        '"Matcher is too general, allow filters?" → Added category filtering + subject/professor metadata badges',
     ]
 
     for i, fb in enumerate(ta_feedback):
-        p3.insert_text(fitz.Point(82, y_fb + 48 + i * 22), fb, fontsize=10, fontname="helv", color=TEXT2)
+        p3.insert_text(fitz.Point(82, y_fb + 44 + i * 20), fb, fontsize=10.5, fontname="helv", color=TEXT2)
 
     p3.draw_rect(fitz.Rect(0, H - 8, W, H), fill=BLUE)
 
@@ -199,11 +197,12 @@ def create_presentation():
     p4.draw_rect(fitz.Rect(60, 92, 70, 96), fill=BLUE)
 
     # Video Demo note
-    vid_card = fitz.Rect(60, 118, 535, 160)
+    vid_card = fitz.Rect(60, 118, 535, 155)
     card_shadow(p4, vid_card)
-    p4.draw_rect(fitz.Rect(60, 118, 66, 160), fill=GREEN)
-    p4.insert_text(fitz.Point(82, 138), "📹 Video Demo", fontsize=16, fontname="hebo", color=GREEN)
-    p4.insert_text(fitz.Point(220, 138), "2-min pre-recorded demo with voice-over (submitted via Moodle)", fontsize=12, fontname="helv", color=TEXT2)
+    p4.draw_rect(fitz.Rect(60, 118, 66, 155), fill=GREEN)
+    p4.insert_text(fitz.Point(82, 136), "📹 Video Demo", fontsize=16, fontname="hebo", color=GREEN)
+    p4.insert_text(fitz.Point(210, 136), "Pre-recorded demo video available in the GitHub repository", fontsize=12, fontname="helv", color=TEXT2)
+    p4.insert_text(fitz.Point(82, 152), "File: demo_video.webm — github.com/bulat1223312/se-toolkit-hackathon", fontsize=10, fontname="helv", color=BLUE)
 
     # Screenshot 1 - full width
     y = 180
