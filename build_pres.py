@@ -2,7 +2,7 @@
 """
 Presentation for Smart FAQ Helper - Lab 9
 5 slides: Title, Context, Implementation, Demo, Links
-Content-focused: maximum essence, minimum decoration
+WITH SCREENSHOTS - beautiful, modern design
 """
 
 import fitz
@@ -38,18 +38,22 @@ def create_presentation():
     # ================================================================
     p1 = doc.new_page(width=W, height=H)
     p1.draw_rect(fitz.Rect(0, 0, W, H), fill=BLUE_BG)
-    p1.draw_rect(fitz.Rect(0, 0, W, 6), fill=BLUE)
+    p1.draw_rect(fitz.Rect(0, 0, W, 8), fill=BLUE)
 
-    p1.insert_text(fitz.Point(60, 120), "Smart FAQ Helper", fontsize=48, fontname="hebo", color=TEXT)
-    p1.insert_text(fitz.Point(60, 160), "Full-stack FAQ system with contextual answers", fontsize=18, fontname="helv", color=TEXT2)
-    p1.draw_rect(fitz.Rect(60, 180, 200, 183), fill=BLUE)
+    # Decorative circles
+    p1.draw_circle(fitz.Point(500, 140), 120, fill=BLUE)
+    p1.draw_circle(fitz.Point(500, 140), 80, fill=BLUE_PALE)
 
-    # Info card
-    info_card = fitz.Rect(60, 230, 400, 460)
+    p1.insert_text(fitz.Point(60, 160), "Smart FAQ Helper", fontsize=42, fontname="hebo", color=TEXT)
+    p1.insert_text(fitz.Point(60, 195), "Full-stack FAQ system with contextual answers", fontsize=16, fontname="helv", color=TEXT2)
+    p1.draw_rect(fitz.Rect(60, 215, 180, 218), fill=BLUE)
+
+    # Student Info Card
+    info_card = fitz.Rect(60, 260, 380, 480)
     card_shadow(p1, info_card)
-    p1.draw_rect(fitz.Rect(60, 230, 66, 460), fill=BLUE)
+    p1.draw_rect(fitz.Rect(60, 260, 66, 480), fill=BLUE)
 
-    p1.insert_text(fitz.Point(85, 275), "Student", fontsize=20, fontname="hebo", color=BLUE)
+    p1.insert_text(fitz.Point(85, 305), "Student Information", fontsize=18, fontname="hebo", color=BLUE)
 
     info = [
         ("Name:", "Bulatov Bulat"),
@@ -59,31 +63,14 @@ def create_presentation():
     ]
 
     for i, (label, value) in enumerate(info):
-        y = 320 + i * 35
-        p1.insert_text(fitz.Point(85, y), label, fontsize=13, fontname="hebo", color=MUTED)
-        p1.insert_text(fitz.Point(190, y), value, fontsize=14, fontname="helv", color=TEXT)
+        y = 350 + i * 35
+        p1.insert_text(fitz.Point(85, y), label, fontsize=12, fontname="hebo", color=MUTED)
+        p1.insert_text(fitz.Point(180, y), value, fontsize=13, fontname="helv", color=TEXT)
 
-    # Tech stack preview
-    tech_card = fitz.Rect(60, 510, 400, 660)
-    card_shadow(p1, tech_card)
-    p1.draw_rect(fitz.Rect(60, 510, 66, 660), fill=BLUE_LIGHT)
-
-    p1.insert_text(fitz.Point(85, 545), "Tech Stack", fontsize=18, fontname="hebo", color=BLUE_LIGHT)
-
-    tech = [
-        "Backend: FastAPI + Python 3.10",
-        "Database: SQLite + SQLAlchemy ORM",
-        "Frontend: Vanilla JS + CSS Grid",
-        "Search: Hybrid fuzzy (difflib + Jaccard)",
-        "Deployment: Docker on Ubuntu 24.04",
-    ]
-
-    for i, t in enumerate(tech):
-        p1.insert_text(fitz.Point(85, 580 + i * 24), t, fontsize=12, fontname="helv", color=TEXT)
-
-    p1.draw_rect(fitz.Rect(0, H - 6, W, H), fill=BLUE)
-    p1.insert_textbox(fitz.Rect(60, H - 32, W - 60, H - 18),
-                      "Lab 9 - Quiz and Hackathon", fontsize=10, fontname="helv", color=MUTED, align=fitz.TEXT_ALIGN_CENTER)
+    # Bottom
+    p1.draw_rect(fitz.Rect(0, H - 8, W, H), fill=BLUE)
+    p1.insert_textbox(fitz.Rect(60, H - 35, W - 60, H - 20),
+                      "Lab 9 - Quiz and Hackathon", fontsize=9, fontname="helv", color=MUTED, align=fitz.TEXT_ALIGN_CENTER)
 
     print("✓ Slide 1: Title")
 
@@ -92,65 +79,30 @@ def create_presentation():
     # ================================================================
     p2 = doc.new_page(width=W, height=H)
     p2.draw_rect(fitz.Rect(0, 0, W, H), fill=BLUE_BG)
-    p2.draw_rect(fitz.Rect(0, 0, W, 6), fill=BLUE)
+    p2.draw_rect(fitz.Rect(0, 0, W, 8), fill=BLUE)
 
-    p2.insert_text(fitz.Point(60, 60), "Context", fontsize=42, fontname="hebo", color=TEXT)
-    p2.draw_rect(fitz.Rect(60, 78, 100, 82), fill=BLUE)
+    p2.insert_text(fitz.Point(60, 65), "Context", fontsize=38, fontname="hebo", color=TEXT)
+    p2.draw_rect(fitz.Rect(60, 82, 90, 86), fill=BLUE)
 
-    # End User
-    y = 115
-    eu_card = fitz.Rect(60, y, 535, y + 140)
-    card_shadow(p2, eu_card)
-    p2.draw_rect(fitz.Rect(60, y, 66, y + 140), fill=BLUE)
-    p2.insert_text(fitz.Point(82, y + 30), "End User", fontsize=22, fontname="hebo", color=BLUE)
-    p2.insert_textbox(fitz.Rect(82, y + 58, 522, y + 128),
-                      "University students who need quick access to course information, deadlines, exam schedules, grading policies, campus resources, and other academic information.",
-                      fontsize=14, fontname="helv", color=TEXT)
-
-    # Problem
-    y = 285
-    prob_card = fitz.Rect(60, y, 535, y + 195)
-    card_shadow(p2, prob_card)
-    p2.draw_rect(fitz.Rect(60, y, 66, y + 195), fill=ORANGE)
-    p2.insert_text(fitz.Point(82, y + 30), "Problem", fontsize=22, fontname="hebo", color=ORANGE)
-
-    problems = [
-        "Students waste time searching through multiple course pages, Moodle, emails, and announcements",
-        "Same questions asked repeatedly (deadlines, exam rooms, office hours, submission rules)",
-        "Information scattered across many sources, hard to find quickly",
-        "No single place to get instant, precise answers with related context",
+    # Three cards
+    cards_data = [
+        ("End User", "University students who need quick access to course information, deadlines, exam schedules, grading policies, campus resources, and other academic information.", BLUE),
+        ("Problem", "Students waste time searching through multiple course pages, Moodle, emails, and announcements to find basic information. Information is scattered across many sources and hard to find quickly.", ORANGE),
+        ("Product Idea", "The system finds the most similar question from a database using fuzzy matching and returns the best answer instantly, plus all related entries from the same category.", GREEN),
     ]
 
-    for i, prob in enumerate(problems):
-        p2.insert_text(fitz.Point(82, y + 62 + i * 32), f"• {prob}", fontsize=13, fontname="helv", color=TEXT)
+    y_positions = [120, 310, 520]
 
-    # Product Idea
-    y = 515
-    idea_card = fitz.Rect(60, y, 535, y + 140)
-    card_shadow(p2, idea_card)
-    p2.draw_rect(fitz.Rect(60, y, 66, y + 140), fill=GREEN)
-    p2.insert_text(fitz.Point(82, y + 30), "Product Idea", fontsize=22, fontname="hebo", color=GREEN)
-    p2.insert_textbox(fitz.Rect(82, y + 58, 522, y + 128),
-                      "A single-page web application with fuzzy search that instantly finds the most similar FAQ and returns the best answer plus all related entries from the same category — 112 entries across 12 categories.",
-                      fontsize=14, fontname="helv", color=TEXT)
+    for (title, desc, accent_color), y in zip(cards_data, y_positions):
+        h = 160 if title == "Problem" else 150
+        card = fitz.Rect(60, y, 535, y + h)
+        card_shadow(p2, card)
+        p2.draw_rect(fitz.Rect(60, y, 66, y + h), fill=accent_color)
 
-    # Key metrics
-    y = 685
-    metrics = [
-        ("112", "FAQ entries"),
-        ("12", "Categories"),
-        ("<1s", "Response time"),
-        ("8", "API endpoints"),
-    ]
+        p2.insert_text(fitz.Point(82, y + 35), title, fontsize=20, fontname="hebo", color=accent_color)
+        p2.insert_textbox(fitz.Rect(82, y + 58, 522, y + h - 15), desc, fontsize=13, fontname="helv", color=TEXT)
 
-    for i, (num, label) in enumerate(metrics):
-        x = 60 + i * 125
-        mcard = fitz.Rect(x, y, x + 115, y + 60)
-        card_shadow(p2, mcard)
-        p2.insert_textbox(fitz.Rect(x + 5, y + 8, x + 110, y + 35), num, fontsize=26, fontname="hebo", color=BLUE, align=fitz.TEXT_ALIGN_CENTER)
-        p2.insert_textbox(fitz.Rect(x + 5, y + 38, x + 110, y + 55), label, fontsize=9, fontname="helv", color=MUTED, align=fitz.TEXT_ALIGN_CENTER)
-
-    p2.draw_rect(fitz.Rect(0, H - 6, W, H), fill=BLUE)
+    p2.draw_rect(fitz.Rect(0, H - 8, W, H), fill=BLUE)
 
     print("✓ Slide 2: Context")
 
@@ -159,131 +111,134 @@ def create_presentation():
     # ================================================================
     p3 = doc.new_page(width=W, height=H)
     p3.draw_rect(fitz.Rect(0, 0, W, H), fill=BLUE_BG)
-    p3.draw_rect(fitz.Rect(0, 0, W, 6), fill=BLUE)
+    p3.draw_rect(fitz.Rect(0, 0, W, 8), fill=BLUE)
 
-    p3.insert_text(fitz.Point(60, 50), "Implementation", fontsize=42, fontname="hebo", color=TEXT)
-    p3.draw_rect(fitz.Rect(60, 68, 170, 72), fill=BLUE)
+    p3.insert_text(fitz.Point(60, 60), "Implementation", fontsize=38, fontname="hebo", color=TEXT)
+    p3.draw_rect(fitz.Rect(60, 77, 160, 81), fill=BLUE)
+
+    # Tech stack line
+    p3.insert_text(fitz.Point(60, 100), "Tech Stack: FastAPI (backend) + SQLite (database) + Vanilla JS (frontend) + Docker (deployment)", fontsize=12, fontname="helv", color=TEXT2)
 
     # VERSION 1
-    y = 95
-    v1h = fitz.Rect(60, y, 535, y + 28)
+    y = 125
+    v1h = fitz.Rect(60, y, 535, y + 30)
     p3.draw_rect(v1h, fill=CARD)
-    p3.draw_rect(fitz.Rect(60, y, 66, y + 28), fill=BLUE)
-    p3.insert_text(fitz.Point(82, y + 20), "Version 1 — Core MVP", fontsize=17, fontname="hebo", color=BLUE)
+    p3.draw_rect(fitz.Rect(60, y, 66, y + 30), fill=BLUE)
+    p3.insert_text(fitz.Point(82, y + 22), "Version 1 — Core MVP", fontsize=16, fontname="hebo", color=BLUE)
 
     v1 = [
-        "Input field for questions — text input with placeholder and real-time validation",
-        "Basic FAQ matching — keyword-based search across 112 entries in database",
-        "Return predefined answers — seeded SQLite database with Q&A pairs",
-        "Simple backend (FastAPI) — Pydantic models, SQLAlchemy ORM, REST API",
-        "12 categories with metadata — subject, professor, room, time, date, semester, type",
-        "Web UI — responsive single-page app with CSS Grid and smooth animations",
+        "Input field for questions with real-time validation and placeholder",
+        "Basic FAQ matching (keyword-based) across 112 entries in database",
+        "Return predefined answers from SQLite with metadata",
+        "Simple backend (FastAPI) with Pydantic models and SQLAlchemy ORM",
+        "12 categories: deadlines, exams, projects, grades, schedule, enrollment, IT, campus, financial, life, rules, general",
     ]
 
     for i, item in enumerate(v1):
-        iy = y + 42 + i * 28
-        p3.draw_rect(fitz.Rect(75, iy - 9, 90, iy + 5), fill=BLUE)
+        iy = y + 45 + i * 28
+        p3.draw_rect(fitz.Rect(75, iy - 10, 90, iy + 4), fill=BLUE)
         p3.insert_text(fitz.Point(78, iy), "✓", fontsize=10, fontname="helv", color=WHITE)
-        p3.insert_text(fitz.Point(100, iy), item, fontsize=11, fontname="helv", color=TEXT)
+        p3.insert_text(fitz.Point(100, iy), item, fontsize=10.5, fontname="helv", color=TEXT)
 
     # VERSION 2
-    y = 295
-    v2h = fitz.Rect(60, y, 535, y + 28)
+    y = 305
+    v2h = fitz.Rect(60, y, 535, y + 30)
     p3.draw_rect(v2h, fill=CARD)
-    p3.draw_rect(fitz.Rect(60, y, 66, y + 28), fill=BLUE_LIGHT)
-    p3.insert_text(fitz.Point(82, y + 20), "Version 2 — Final Product", fontsize=17, fontname="hebo", color=BLUE_LIGHT)
+    p3.draw_rect(fitz.Rect(60, y, 66, y + 30), fill=BLUE_LIGHT)
+    p3.insert_text(fitz.Point(82, y + 22), "Version 2 — Final Product", fontsize=16, fontname="hebo", color=BLUE_LIGHT)
 
     v2 = [
-        "Fuzzy search engine — 55% character-level (difflib) + 45% word-level (Jaccard similarity)",
-        "History tracking — every query saved with timestamp, accessible via /history API",
-        "Autocomplete — real-time suggestions (min 2 chars), highlighted matches, keyboard navigation",
-        "Category browsing — sidebar with 12 categories, entry counts, click to see all entries",
-        "Contextual answers — best match as primary card + all related entries from same category",
-        "Metadata badges — subject, professor, room, time, date, semester with color-coded types",
-        "Dark mode — toggle with localStorage persistence, full CSS variable theming",
-        "Dockerized deployment — python:3.10-slim image on Ubuntu 24.04 university VM",
-        "8 API endpoints — /, /faqs, /categories, /events, /search_suggestions, /ask, /history, /stats",
-        "Responsive design — mobile-friendly layout, collapsible sidebar, hamburger menu",
+        "Fuzzy search: hybrid matching (55% character-level difflib + 45% word-level Jaccard similarity)",
+        "SQLite database with SQLAlchemy ORM — stores 112 FAQs + query history with timestamps",
+        "History tracking: every query saved with question, answer, timestamp — accessible via API",
+        "Dockerized deployment (python:3.10-slim) on Ubuntu 24.04 VM at university",
+        "Improved UI: single-page app with CSS Grid, smooth animations, responsive design",
+        "Category browsing: sidebar with 12 categories, entry counts, active highlighting",
+        "Autocomplete: real-time suggestions (min 2 chars), highlighted matches, keyboard navigation",
+        "Contextual answers: best match as primary card + all related entries from same category",
+        "Metadata badges: subject, professor, room, time, date, semester with color-coded types",
+        "Dark mode with localStorage persistence and CSS variable theming",
+        "8 API endpoints: /, /faqs, /categories, /events, /search_suggestions, /ask, /history, /stats",
     ]
 
     for i, item in enumerate(v2):
-        iy = y + 42 + i * 28
-        p3.draw_rect(fitz.Rect(75, iy - 9, 90, iy + 5), fill=BLUE_LIGHT)
+        iy = y + 45 + i * 28
+        p3.draw_rect(fitz.Rect(75, iy - 10, 90, iy + 4), fill=BLUE_LIGHT)
         p3.insert_text(fitz.Point(78, iy), "✓", fontsize=10, fontname="helv", color=WHITE)
-        p3.insert_text(fitz.Point(100, iy), item, fontsize=11, fontname="helv", color=TEXT)
-
-    # Architecture diagram
-    y = 600
-    arch_card = fitz.Rect(60, y, 535, y + 95)
-    card_shadow(p3, arch_card)
-    p3.draw_rect(fitz.Rect(60, y, 66, y + 95), fill=GREEN)
-    p3.insert_text(fitz.Point(82, y + 22), "Architecture", fontsize=18, fontname="hebo", color=GREEN)
-
-    arch = [
-        "Client (Browser) → REST API → FastAPI Server → SQLite Database",
-        "User types question → Autocomplete suggests → Fuzzy match finds best answer → Returns result + related entries",
-        "Each query → Saved to History table → Available via /history and /stats endpoints",
-    ]
-
-    for i, a in enumerate(arch):
-        p3.insert_text(fitz.Point(82, y + 48 + i * 24), a, fontsize=11, fontname="helv", color=TEXT2)
+        p3.insert_text(fitz.Point(100, iy), item, fontsize=10.5, fontname="helv", color=TEXT)
 
     # TA Feedback
-    y = 715
-    fb_card = fitz.Rect(60, y, 535, y + 80)
+    y_fb = 645
+    fb_card = fitz.Rect(60, y_fb, 535, y_fb + 90)
     card_shadow(p3, fb_card)
-    p3.draw_rect(fitz.Rect(60, y, 66, y + 80), fill=ORANGE)
-    p3.insert_text(fitz.Point(82, y + 20), "TA Feedback Addressed", fontsize=16, fontname="hebo", color=ORANGE)
+    p3.draw_rect(fitz.Rect(60, y_fb, 66, y_fb + 90), fill=ORANGE)
 
-    ta = [
-        '"Matcher too general" → Added subject/professor metadata, category filtering, confidence scores',
-        '"UI needs work" → Category browse, autocomplete, dark mode, responsive design',
-        '"Deploy it" → Dockerized + deployed on university VM (Ubuntu 24.04)',
+    p3.insert_text(fitz.Point(82, y_fb + 25), "TA Feedback Addressed", fontsize=16, fontname="hebo", color=ORANGE)
+
+    ta_feedback = [
+        '"Matcher too general" → Added subject/professor metadata and category filtering',
+        '"UI needs improvement" → Built category browse, autocomplete, dark mode, responsive layout',
+        '"Add deployment" → Dockerized and deployed on university VM (Ubuntu 24.04)',
     ]
 
-    for i, t in enumerate(ta):
-        p3.insert_text(fitz.Point(82, y + 44 + i * 22), t, fontsize=10, fontname="helv", color=TEXT2)
+    for i, fb in enumerate(ta_feedback):
+        p3.insert_text(fitz.Point(82, y_fb + 48 + i * 22), fb, fontsize=10, fontname="helv", color=TEXT2)
 
-    p3.draw_rect(fitz.Rect(0, H - 6, W, H), fill=BLUE)
+    p3.draw_rect(fitz.Rect(0, H - 8, W, H), fill=BLUE)
 
     print("✓ Slide 3: Implementation")
 
     # ================================================================
-    # SLIDE 4: DEMO
+    # SLIDE 4: DEMO — WITH SCREENSHOTS
     # ================================================================
     p4 = doc.new_page(width=W, height=H)
     p4.draw_rect(fitz.Rect(0, 0, W, H), fill=BLUE_BG)
-    p4.draw_rect(fitz.Rect(0, 0, W, 6), fill=BLUE)
+    p4.draw_rect(fitz.Rect(0, 0, W, 8), fill=BLUE)
 
-    p4.insert_text(fitz.Point(60, 60), "Demo", fontsize=42, fontname="hebo", color=TEXT)
-    p4.draw_rect(fitz.Rect(60, 78, 70, 82), fill=BLUE)
+    p4.insert_text(fitz.Point(60, 75), "Demo", fontsize=38, fontname="hebo", color=TEXT)
+    p4.draw_rect(fitz.Rect(60, 92, 70, 96), fill=BLUE)
 
     # Video Demo note
-    vid_card = fitz.Rect(60, 110, 535, 160)
+    vid_card = fitz.Rect(60, 118, 535, 160)
     card_shadow(p4, vid_card)
-    p4.draw_rect(fitz.Rect(60, 110, 66, 160), fill=GREEN)
-    p4.insert_text(fitz.Point(82, 130), "📹 Video Demo", fontsize=18, fontname="hebo", color=GREEN)
-    p4.insert_text(fitz.Point(82, 150), "2-minute pre-recorded demo with voice-over — submitted separately via Moodle", fontsize=12, fontname="helv", color=TEXT2)
+    p4.draw_rect(fitz.Rect(60, 118, 66, 160), fill=GREEN)
+    p4.insert_text(fitz.Point(82, 138), "📹 Video Demo", fontsize=16, fontname="hebo", color=GREEN)
+    p4.insert_text(fitz.Point(220, 138), "2-min pre-recorded demo with voice-over (submitted via Moodle)", fontsize=12, fontname="helv", color=TEXT2)
 
-    # Feature highlights instead of screenshots
-    features = [
-        ("FAQ Search", "Type 'exam deadline' → Get best match (confidence 85%) + 4 related entries from exams category", BLUE),
-        ("Category Browse", "Click 'deadlines' in sidebar → See all 9 deadline entries at once with metadata badges", BLUE_LIGHT),
-        ("Autocomplete", "Type 'math' → Get real-time suggestions with category badges, navigate with arrow keys", BLUE),
-        ("Contextual Results", "Search 'gym' → Best match as primary card + 2 more campus entries with room, time, type badges", GREEN),
-        ("Dark Mode", "Toggle moon icon → Full theme swap via CSS variables, preference saved in localStorage", BLUE_PALE),
-    ]
+    # Screenshot 1 - full width
+    y = 180
+    s1_header = fitz.Rect(60, y, 535, y + 28)
+    p4.draw_rect(s1_header, fill=CARD)
+    p4.draw_rect(fitz.Rect(60, y, 66, y + 28), fill=BLUE)
+    p4.insert_text(fitz.Point(82, y + 20), "Screenshot 1: FAQ Search", fontsize=14, fontname="hebo", color=TEXT)
 
-    for i, (title, desc, accent) in enumerate(features):
-        y = 185 + i * 105
-        fcard = fitz.Rect(60, y, 535, y + 95)
-        card_shadow(p4, fcard)
-        p4.draw_rect(fitz.Rect(60, y, 66, y + 95), fill=accent)
+    shot1 = "/root/smart-faq-helper/screenshot_search.png"
+    if os.path.exists(shot1):
+        p4.insert_image(fitz.Rect(60, y + 35, 535, y + 250), filename=shot1, keep_proportion=True)
 
-        p4.insert_text(fitz.Point(82, y + 25), f"{i+1}. {title}", fontsize=16, fontname="hebo", color=accent)
-        p4.insert_textbox(fitz.Rect(82, y + 48, 522, y + 85), desc, fontsize=12, fontname="helv", color=TEXT)
+    # Screenshot 2 and 3 side by side
+    y2 = y + 400
+    # Left
+    s2_header = fitz.Rect(60, y2, 295, y2 + 28)
+    p4.draw_rect(s2_header, fill=CARD)
+    p4.draw_rect(fitz.Rect(60, y2, 66, y2 + 28), fill=BLUE_LIGHT)
+    p4.insert_text(fitz.Point(82, y2 + 20), "Screenshot 2: Categories", fontsize=13, fontname="hebo", color=TEXT)
 
-    p4.draw_rect(fitz.Rect(0, H - 6, W, H), fill=BLUE)
+    shot2 = "/root/smart-faq-helper/screenshot_categories.png"
+    if os.path.exists(shot2):
+        p4.insert_image(fitz.Rect(60, y2 + 33, 295, y2 + 200), filename=shot2, keep_proportion=True)
+
+    # Right
+    s3_header = fitz.Rect(315, y2, 535, y2 + 28)
+    p4.draw_rect(s3_header, fill=CARD)
+    p4.draw_rect(fitz.Rect(315, y2, 321, y2 + 28), fill=BLUE_PALE)
+    p4.insert_text(fitz.Point(333, y2 + 20), "Screenshot 3: Dark Mode", fontsize=13, fontname="hebo", color=TEXT)
+
+    shot3 = "/root/smart-faq-helper/screenshot_dark.png"
+    if os.path.exists(shot3):
+        p4.insert_image(fitz.Rect(315, y2 + 33, 535, y2 + 200), filename=shot3, keep_proportion=True)
+
+    p4.draw_rect(fitz.Rect(0, H - 8, W, H), fill=BLUE)
 
     print("✓ Slide 4: Demo")
 
@@ -292,77 +247,73 @@ def create_presentation():
     # ================================================================
     p5 = doc.new_page(width=W, height=H)
     p5.draw_rect(fitz.Rect(0, 0, W, H), fill=BLUE_BG)
-    p5.draw_rect(fitz.Rect(0, 0, W, 6), fill=BLUE)
+    p5.draw_rect(fitz.Rect(0, 0, W, 8), fill=BLUE)
 
-    p5.insert_text(fitz.Point(60, 60), "Links", fontsize=42, fontname="hebo", color=TEXT)
-    p5.draw_rect(fitz.Rect(60, 78, 60, 82), fill=BLUE)
+    p5.insert_text(fitz.Point(60, 75), "Links", fontsize=38, fontname="hebo", color=TEXT)
+    p5.draw_rect(fitz.Rect(60, 92, 60, 96), fill=BLUE)
 
     # GitHub Repository
-    y_gh = 115
-    gh_card = fitz.Rect(60, y_gh, 535, y_gh + 170)
+    y_gh = 135
+    gh_card = fitz.Rect(60, y_gh, 535, y_gh + 140)
     card_shadow(p5, gh_card)
-    p5.draw_rect(fitz.Rect(60, y_gh, 66, y_gh + 170), fill=BLUE)
-    p5.insert_text(fitz.Point(82, y_gh + 30), "GitHub Repository", fontsize=24, fontname="hebo", color=BLUE)
+    p5.draw_rect(fitz.Rect(60, y_gh, 66, y_gh + 140), fill=BLUE)
 
+    p5.insert_text(fitz.Point(82, y_gh + 30), "GitHub Repository", fontsize=20, fontname="hebo", color=BLUE)
+    p5.insert_text(fitz.Point(82, y_gh + 52), "github.com/bulat1223312/se-toolkit-hackathon", fontsize=12, fontname="helv", color=TEXT2)
+
+    # Clickable link
     gh_url = "https://github.com/bulat1223312/se-toolkit-hackathon"
-    gh_link_rect = fitz.Rect(82, y_gh + 55, 490, y_gh + 75)
-    p5.insert_text(fitz.Point(82, y_gh + 70), gh_url, fontsize=12, fontname="helv", color=BLUE)
+    gh_link_rect = fitz.Rect(82, y_gh + 55, 480, y_gh + 72)
     p5.insert_link({"kind": fitz.LINK_URI, "uri": gh_url, "from": gh_link_rect})
 
     # QR code
     qr_gh = "/root/smart-faq-helper/qr_github.png"
     if os.path.exists(qr_gh):
-        p5.insert_image(fitz.Rect(82, y_gh + 85, 162, y_gh + 155), filename=qr_gh)
-        p5.insert_text(fitz.Point(175, y_gh + 105), "Scan to open repository", fontsize=11, fontname="helv", color=TEXT2)
-        p5.insert_text(fitz.Point(175, y_gh + 123), "✓ MIT License  ✓ Full source code", fontsize=10, fontname="helv", color=GREEN)
-        p5.insert_text(fitz.Point(175, y_gh + 140), "✓ Docker support  ✓ README.md", fontsize=10, fontname="helv", color=GREEN)
+        p5.insert_image(fitz.Rect(82, y_gh + 75, 162, y_gh + 130), filename=qr_gh)
+        p5.insert_text(fitz.Point(175, y_gh + 90), "Scan to open repository", fontsize=11, fontname="helv", color=TEXT2)
+        p5.insert_text(fitz.Point(175, y_gh + 106), "✓ MIT License  ✓ Full source code", fontsize=10, fontname="helv", color=GREEN)
 
     # Deployed Product
-    y_dep = 320
-    dep_card = fitz.Rect(60, y_dep, 535, y_dep + 170)
+    y_dep = 310
+    dep_card = fitz.Rect(60, y_dep, 535, y_dep + 140)
     card_shadow(p5, dep_card)
-    p5.draw_rect(fitz.Rect(60, y_dep, 66, y_dep + 170), fill=GREEN)
-    p5.insert_text(fitz.Point(82, y_dep + 30), "Deployed Product", fontsize=24, fontname="hebo", color=GREEN)
+    p5.draw_rect(fitz.Rect(60, y_dep, 66, y_dep + 140), fill=GREEN)
+
+    p5.insert_text(fitz.Point(82, y_dep + 30), "Deployed Product", fontsize=20, fontname="hebo", color=GREEN)
+    p5.insert_text(fitz.Point(82, y_dep + 52), "http://10.93.25.49:8000", fontsize=14, fontname="hebo", color=GREEN)
 
     dep_url = "http://10.93.25.49:8000"
-    dep_link_rect = fitz.Rect(82, y_dep + 55, 400, y_dep + 75)
-    p5.insert_text(fitz.Point(82, y_dep + 70), dep_url, fontsize=14, fontname="hebo", color=GREEN)
+    dep_link_rect = fitz.Rect(82, y_dep + 55, 400, y_dep + 72)
     p5.insert_link({"kind": fitz.LINK_URI, "uri": dep_url, "from": dep_link_rect})
 
     qr_dep = "/root/smart-faq-helper/qr_deployed.png"
     if os.path.exists(qr_dep):
-        p5.insert_image(fitz.Rect(82, y_dep + 85, 162, y_dep + 155), filename=qr_dep)
-        p5.insert_text(fitz.Point(175, y_dep + 105), "Scan to open live app", fontsize=11, fontname="helv", color=TEXT2)
-        p5.insert_text(fitz.Point(175, y_dep + 123), "✓ FAQ search  ✓ Categories", fontsize=10, fontname="helv", color=GREEN)
-        p5.insert_text(fitz.Point(175, y_dep + 140), "✓ Dark mode  ✓ History  ✓ API", fontsize=10, fontname="helv", color=GREEN)
+        p5.insert_image(fitz.Rect(82, y_dep + 75, 162, y_dep + 130), filename=qr_dep)
+        p5.insert_text(fitz.Point(175, y_dep + 90), "Scan to open live app", fontsize=11, fontname="helv", color=TEXT2)
+        p5.insert_text(fitz.Point(175, y_dep + 106), "✓ FAQ search  ✓ Categories  ✓ Dark mode", fontsize=10, fontname="helv", color=GREEN)
 
-    # Tech Stack Summary
-    y_tech = 525
-    tech_card = fitz.Rect(60, y_tech, 535, y_tech + 190)
+    # Tech Stack
+    y_tech = 490
+    tech_card = fitz.Rect(60, y_tech, 535, y_tech + 170)
     card_shadow(p5, tech_card)
-    p5.draw_rect(fitz.Rect(60, y_tech, 66, y_tech + 190), fill=BLUE_LIGHT)
-    p5.insert_text(fitz.Point(82, y_tech + 28), "Tech Stack", fontsize=22, fontname="hebo", color=BLUE_LIGHT)
+    p5.draw_rect(fitz.Rect(60, y_tech, 66, y_tech + 170), fill=BLUE_LIGHT)
 
-    tech_items = [
-        ("Backend", "FastAPI + Python 3.10 + Pydantic models"),
-        ("Database", "SQLite + SQLAlchemy ORM (FAQ + History tables)"),
-        ("Frontend", "Vanilla JavaScript + CSS Grid + CSS Variables"),
-        ("Deployment", "Docker (python:3.10-slim) on Ubuntu 24.04 VM"),
-        ("Search", "Hybrid fuzzy: 55% difflib + 45% Jaccard similarity"),
+    p5.insert_text(fitz.Point(82, y_tech + 30), "Tech Stack", fontsize=20, fontname="hebo", color=BLUE_LIGHT)
+
+    tech = [
+        ("Backend", "FastAPI + Python 3.10"),
+        ("Database", "SQLite + SQLAlchemy ORM"),
+        ("Frontend", "Vanilla JS + CSS Grid"),
+        ("Deployment", "Docker on Ubuntu 24.04"),
     ]
+    for i, (name, val) in enumerate(tech):
+        iy = y_tech + 65 + i * 28
+        badge_rect = fitz.Rect(82, iy - 10, 170, iy + 6)
+        p5.draw_rect(badge_rect, fill=BLUE)
+        p5.insert_text(fitz.Point(85, iy), name, fontsize=10, fontname="hebo", color=WHITE)
+        p5.insert_text(fitz.Point(180, iy), val, fontsize=12, fontname="helv", color=TEXT)
 
-    for i, (tech, desc) in enumerate(tech_items):
-        iy = y_tech + 62 + i * 26
-        badge = fitz.Rect(82, iy - 9, 170, iy + 5)
-        p5.draw_rect(badge, fill=BLUE)
-        p5.insert_text(fitz.Point(85, iy), tech, fontsize=10, fontname="hebo", color=WHITE)
-        p5.insert_text(fitz.Point(180, iy), desc, fontsize=11, fontname="helv", color=TEXT)
-
-    # Features count
-    y_feat = 745
-    p5.insert_text(fitz.Point(82, y_feat), "Features: 112 FAQ entries | 12 categories | Query history | Autocomplete | Dark mode | Responsive | 8 API endpoints", fontsize=10, fontname="helv", color=TEXT2)
-
-    p5.draw_rect(fitz.Rect(0, H - 6, W, H), fill=BLUE)
+    p5.draw_rect(fitz.Rect(0, H - 8, W, H), fill=BLUE)
 
     print("✓ Slide 5: Links")
 
@@ -373,7 +324,7 @@ def create_presentation():
     doc.save(output_path)
     doc.close()
     print(f"\n✅ Done: {output_path}")
-    print(f"   5 slides | Clickable links | QR codes")
+    print(f"   5 slides | Screenshots included | Clickable links | QR codes")
 
 if __name__ == "__main__":
     create_presentation()
